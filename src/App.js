@@ -12,7 +12,7 @@ import ImageGalleryItem from "./Components/ImageGalleryItem/ImageGalleryItem";
 
 function App() {
   const [imgName, setimgName] = useState("");
-  const [imageName, setImageName] = useState([]);
+  const [imageName, setImageName] = useState(null);
   const [name, setName] = useState("");
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState("idle");
@@ -20,16 +20,27 @@ function App() {
   const [idImage, setidImage] = useState(0);
 
   useEffect(() => {
-    if (name !== imgName) {
+    if (name !== imgName || page > 1) {
       setStatus("pending");
       setPage(1);
       setTimeout(() => {
-        fetchApi(imgName, 1)
+        fetchApi(imgName, page)
           .then((res) => {
-            // setPage(2);
-            setImageName(res);
-            setName(imgName);
-            setidImage(0);
+            if (imageName === null) {
+              setImageName(res);
+              setName(imgName);
+              setidImage(0);
+              setStatus("resolved");
+              return;
+            }
+            if (page === 1) {
+              setImageName(res);
+              setName(imgName);
+              setidImage(0);
+              setStatus("resolved");
+              return;
+            }
+            setImageName((prevState) => [...prevState, ...res]);
             setStatus("resolved");
           })
           .catch((error) => {
@@ -37,22 +48,7 @@ function App() {
           });
       }, 1000);
     }
-  }, [imgName]);
-
-  useEffect(() => {
-    if (page === 1) {
-      return;
-    }
-    setStatus("pending");
-    fetchApi(imgName, page)
-      .then((res) => {
-        setImageName((prevState) => [...prevState, ...res]);
-        setStatus("resolved");
-      })
-      .catch((error) => {
-        setStatus("rejected");
-      });
-  }, [page]);
+  }, [imgName, page]);
 
   const loadMore = (e) => {
     e.preventDefault();

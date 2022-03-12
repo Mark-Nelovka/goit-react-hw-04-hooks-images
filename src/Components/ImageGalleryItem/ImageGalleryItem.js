@@ -10,20 +10,21 @@ export default function FetchItems({ searchName, modal }) {
   return (
     <>
       <ItemsCard>
-        {searchName.map(({ id, webformatURL, tags }) => {
-          return (
-            <li className={s.item} key={id}>
-              <img
-                width="300px"
-                height="250px"
-                onClick={showModal}
-                id={id}
-                src={webformatURL}
-                alt={tags}
-              />
-            </li>
-          );
-        })}
+        {searchName &&
+          searchName.map(({ id, webformatURL, tags }) => {
+            return (
+              <li className={s.item} key={id}>
+                <img
+                  width="300px"
+                  height="250px"
+                  onClick={showModal}
+                  id={id}
+                  src={webformatURL}
+                  alt={tags}
+                />
+              </li>
+            );
+          })}
       </ItemsCard>
     </>
   );
