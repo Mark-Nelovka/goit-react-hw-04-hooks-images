@@ -23,30 +23,28 @@ function App() {
     if (name !== imgName || page > 1) {
       setStatus("pending");
       setPage(1);
-      setTimeout(() => {
-        fetchApi(imgName, page)
-          .then((res) => {
-            if (imageName === null) {
-              setImageName(res);
-              setName(imgName);
-              setidImage(0);
-              setStatus("resolved");
-              return;
-            }
-            if (page === 1) {
-              setImageName(res);
-              setName(imgName);
-              setidImage(0);
-              setStatus("resolved");
-              return;
-            }
-            setImageName((prevState) => [...prevState, ...res]);
+      fetchApi(imgName, page)
+        .then((res) => {
+          if (imageName === null) {
+            setImageName(res);
+            setName(imgName);
+            setidImage(0);
             setStatus("resolved");
-          })
-          .catch((error) => {
-            setStatus("rejected");
-          });
-      }, 1000);
+            return;
+          }
+          if (page === 1) {
+            setImageName(res);
+            setName(imgName);
+            setidImage(0);
+            setStatus("resolved");
+            return;
+          }
+          setImageName((prevState) => [...prevState, ...res]);
+          setStatus("resolved");
+        })
+        .catch((error) => {
+          setStatus("rejected");
+        });
     }
   }, [imgName, page]);
 
